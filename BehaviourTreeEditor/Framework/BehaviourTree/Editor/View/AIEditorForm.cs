@@ -108,6 +108,50 @@ namespace ExcelImproter.Framework.BehaviourTree.Editor
                 }
             }
         }
+        private void 上移ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CustomViewNode node = treeView.SelectedNode as CustomViewNode;
+            CustomViewNode parent = node.Parent as CustomViewNode;
+
+            if (null != node.Parent && node.Parent.Nodes.Count > 1)
+            {
+                var tmpRootNode = node.Parent;
+                for (int i = 1; i < tmpRootNode.Nodes.Count; ++i)
+                {
+                    var elem = tmpRootNode.Nodes[i];
+                    if (elem == node)
+                    {
+                        parent.GetData().m_ChildList.RemoveAt(i);
+                        parent.GetData().m_ChildList.Insert(i - 1, node.GetData());
+
+                        tmpRootNode.Nodes.RemoveAt(i);
+                        tmpRootNode.Nodes.Insert(i - 1, node);
+                    }
+                }
+            }
+        }
+        private void 下移ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CustomViewNode node = treeView.SelectedNode as CustomViewNode;
+            CustomViewNode parent = node.Parent as CustomViewNode;
+
+            if (null != node.Parent && node.Parent.Nodes.Count > 1)
+            {
+                var tmpRootNode = node.Parent;
+                for(int i=0;i<tmpRootNode.Nodes.Count-1;++i)
+                {
+                    var elem = tmpRootNode.Nodes[i];
+                    if(elem == node)
+                    {
+                        parent.GetData().m_ChildList.RemoveAt(i);
+                        parent.GetData().m_ChildList.Insert(i + 1, node.GetData());
+
+                        tmpRootNode.Nodes.RemoveAt(i);
+                        tmpRootNode.Nodes.Insert(i + 1, node);
+                    }
+                }                
+            }
+        }
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         { 
             // check config
@@ -155,6 +199,14 @@ namespace ExcelImproter.Framework.BehaviourTree.Editor
                     {
                         elem.Enabled = false;
                     }
+                }
+                if (elem.Text == "上移")
+                {
+                    elem.Enabled = treeView.SelectedNode != null ;
+                }
+                if (elem.Text == "下移")
+                {
+                    elem.Enabled = treeView.SelectedNode != null;
                 }
             }
         }
